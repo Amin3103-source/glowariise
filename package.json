@@ -1,0 +1,48 @@
+{
+  "name": "glowariise",
+  "version": "1.0.0",
+  "description": "GlowArise \u2014 Deep Work & Focus App",
+  "main": "main.js",
+  "scripts": {
+    "start": "electron .",
+    "build-mac": "electron-builder --mac"
+  },
+  "build": {
+    "appId": "de.aliamin.glowariise",
+    "productName": "GlowArise",
+    "extraResources": [
+      {
+        "from": "tray-22.png",
+        "to": "tray-22.png"
+      },
+      {
+        "from": "logo.png",
+        "to": "logo.png"
+      },
+      {
+        "from": "daemon/glowariise-daemon.sh",
+        "to": "daemon/glowariise-daemon.sh"
+      },
+      {
+        "from": "daemon/de.aliamin.glowariise.plist",
+        "to": "daemon/de.aliamin.glowariise.plist"
+      },
+      {
+        "from": "daemon/install.sh",
+        "to": "daemon/install.sh"
+      }
+    ],
+    "mac": {
+      "target": "dmg",
+      "category": "public.app-category.productivity",
+      "icon": "icon.png"
+    },
+    "icon": "icon.png"
+  },
+  "author": "Ali Amin",
+  "license": "MIT",
+  "devDependencies": {
+    "electron": "^28.0.0",
+    "electron-builder": "^24.0.0"
+  }
+}

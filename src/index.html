@@ -1,0 +1,417 @@
+<!DOCTYPE html>
+<html lang="de" data-theme="dark">
+<head>
+  <meta charset="UTF-8">
+  <meta http-equiv="Content-Security-Policy" content="default-src 'self'; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src https://fonts.gstatic.com; script-src 'self'">
+  <title>GlowArise</title>
+  <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@300;400;500;600&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+
+<!-- TOPBAR -->
+<header class="topbar">
+  <div class="topbar-left">
+    <span class="logo-mark">✦</span><span class="app-name">GlowArise</span>
+  </div>
+  <div class="topbar-right">
+    <button class="pro-badge" id="btn-upgrade-top">✦ Pro</button>
+    <button class="icon-btn" id="theme-toggle">
+      <svg id="icon-sun" width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="5"/><line x1="12" y1="1" x2="12" y2="3"/><line x1="12" y1="21" x2="12" y2="23"/><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"/><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"/><line x1="1" y1="12" x2="3" y2="12"/><line x1="21" y1="12" x2="23" y2="12"/><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"/><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"/></svg>
+      <svg id="icon-moon" width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="display:none"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg>
+    </button>
+  </div>
+</header>
+
+<div class="layout">
+
+  <!-- SIDEBAR -->
+  <nav class="sidebar">
+    <button class="nav-item active" data-tab="focus">
+      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="12" cy="12" r="10"/><circle cx="12" cy="12" r="4"/></svg>
+      <span data-i18n="nav.focus">Focus</span>
+    </button>
+    <button class="nav-item" data-tab="todo">
+      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 11 12 14 22 4"/><path d="M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11"/></svg>
+      <span data-i18n="nav.todo">To-Do</span>
+    </button>
+    <button class="nav-item" data-tab="progress">
+      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><line x1="18" y1="20" x2="18" y2="10"/><line x1="12" y1="20" x2="12" y2="4"/><line x1="6" y1="20" x2="6" y2="14"/></svg>
+      <span>Progress</span>
+    </button>
+    <button class="nav-item" data-tab="blocklist">
+      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="12" cy="12" r="10"/><line x1="4.93" y1="4.93" x2="19.07" y2="19.07"/></svg>
+      <span data-i18n="nav.block">Block</span>
+    </button>
+    <button class="nav-item" data-tab="shield">
+      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
+      <span data-i18n="nav.shield">Shield</span>
+    </button>
+    <button class="nav-item nav-pro" data-tab="pro">
+      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
+      <span>Pro</span>
+    </button>
+    <button class="nav-item" data-tab="settings">
+      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83-2.83l.06-.06A1.65 1.65 0 0 0 4.68 15a1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 2.83-2.83l.06.06A1.65 1.65 0 0 0 9 4.68a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 2.83l-.06.06A1.65 1.65 0 0 0 19.4 9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z"/></svg>
+      <span data-i18n="nav.settings">Settings</span>
+    </button>
+  </nav>
+
+  <main class="main">
+
+    <!-- ══ FOCUS ══════════════════════════════════════════════════ -->
+    <section class="tab active" id="tab-focus">
+
+      <!-- Session laufend -->
+      <div id="session-view" class="hidden">
+        <div class="session-hero">
+          <div class="pulse-ring"></div>
+          <p class="session-label" data-i18n="focus.sessionActive">Session aktiv</p>
+          <div class="session-clock" id="session-countdown">00:00:00</div>
+          <p class="session-sub" data-i18n="focus.sessionSub">Du bist im Flow. Ablenkungen blockiert.</p>
+        </div>
+        <div class="mb16">
+          <p class="field-label" data-i18n="focus.blocked">Gesperrte Seiten</p>
+          <div class="chip-row" id="session-chips"></div>
+        </div>
+        <blockquote class="quote-block">
+          "The ability to perform deep work is becoming increasingly rare and increasingly valuable."
+          <cite>— Cal Newport</cite>
+        </blockquote>
+        <button class="btn-ghost-danger" id="btn-stop-session" data-i18n="focus.stopSession">Session beenden</button>
+      </div>
+
+      <!-- Freigang laufend -->
+      <div id="freigang-view" class="hidden">
+        <div class="session-hero">
+          <div class="pulse-ring" style="--pulse-color: #f97316"></div>
+          <p class="session-label" style="color:#f97316" data-i18n="focus.freigangActive">Freigang aktiv</p>
+          <div class="session-clock" style="color:#f97316" id="freigang-countdown">00:00:00</div>
+          <p class="session-sub" data-i18n="focus.freigangSub">Verdiente Pause — genieße sie.</p>
+        </div>
+        <button class="btn-ghost-danger" id="btn-stop-freigang" data-i18n="focus.stopFreigang">Freigang beenden</button>
+      </div>
+
+      <!-- Setup -->
+      <div id="focus-setup">
+        <!-- Streak Banner -->
+        <div class="streak-banner">
+          <span class="streak-fire">🔥</span>
+          <div>
+            <p class="streak-num" id="streak-count">0</p>
+            <p class="streak-label" data-i18n="streak.days">Tage Streak</p>
+          </div>
+          <div class="streak-divider"></div>
+          <div>
+            <p class="streak-num" id="month-hours">0h</p>
+            <p class="streak-label" data-i18n="streak.month">diesen Monat</p>
+          </div>
+          <div class="streak-divider"></div>
+          <div>
+            <p class="streak-num" id="total-sessions-top">0</p>
+            <p class="streak-label" data-i18n="streak.total">Sessions gesamt</p>
+          </div>
+        </div>
+
+        <p class="page-title mt20" data-i18n="focus.title">Deep Work</p>
+        <p class="page-sub" data-i18n="focus.sub">Wähle eine Dauer und starte deine Session.</p>
+
+        <p class="field-label mt20" data-i18n="focus.duration">Dauer</p>
+        <div class="preset-grid">
+          <button class="preset-btn" data-min="25">25<span>min</span></button>
+          <button class="preset-btn" data-min="45">45<span>min</span></button>
+          <button class="preset-btn" data-min="60">60<span>min</span></button>
+          <button class="preset-btn" data-min="90">90<span>min</span></button>
+        </div>
+        <div class="row gap8 mt8">
+          <input type="number" id="custom-min" class="input-field w72" placeholder="120" min="1" max="480">
+          <span class="dim">min — eigene Dauer</span>
+        </div>
+
+        <p class="field-label mt20" data-i18n="focus.willBlock">Wird gesperrt</p>
+        <div id="focus-preview" class="preview-box">
+          <span class="dim">Noch keine Seiten — gehe zu Block</span>
+        </div>
+
+        <div id="browser-warn" class="callout callout-warn hidden" style="margin-bottom:10px">
+          ⚠ <strong>Wichtig:</strong> Nach Session-Start alle Browser-Tabs der gesperrten Seiten schließen & Browser neu starten — sonst bleibt der DNS-Cache aktiv.
+        </div>
+        <div id="admin-warn" class="callout callout-warn hidden">
+          <strong>⚠ Keine Schreibrechte</strong> — starte mit <code>sudo npm start</code>
+        </div>
+
+        <button class="btn-primary mt16" id="btn-start-session" disabled data-i18n="focus.start">✦ Session starten</button>
+        <p class="hint-text" id="focus-hint">Dauer wählen & mindestens 1 Seite blockieren</p>
+      </div>
+    </section>
+
+    <!-- ══ TO-DO ══════════════════════════════════════════════════ -->
+    <section class="tab" id="tab-todo">
+      <p class="page-title" data-i18n="todo.title">To-Do</p>
+      <p class="page-sub" data-i18n="todo.sub">Aufgaben abhaken → Freigang verdienen.</p>
+
+      <div class="freigang-row mt16">
+        <span class="dim" data-i18n="todo.freigangLabel">Freigang nach Fertigstellung</span>
+        <div class="row gap6">
+          <input type="number" id="freigang-min" class="input-field w56" value="40" min="5" max="120">
+          <span class="dim">min</span>
+        </div>
+      </div>
+
+      <div class="progress-track mt12">
+        <div id="todo-progress" class="progress-fill" style="width:0%"></div>
+      </div>
+      <div class="row-between mt4">
+        <span class="dim" id="todo-count">0 / 0</span>
+        <span class="dim" id="todo-hint"></span>
+      </div>
+
+      <div id="unlock-banner" class="callout callout-gold hidden mt12">
+        🎉 Alle Aufgaben erledigt!
+        <button class="btn-sm-gold" id="btn-start-freigang" data-i18n="todo.startFreigang">Freigang starten</button>
+      </div>
+
+      <div class="row gap8 mt12">
+        <input type="text" id="todo-input" class="input-field flex1" placeholder="Neue Aufgabe…">
+        <button class="btn-icon-add" id="btn-add-todo">+</button>
+      </div>
+
+      <div id="todo-list" class="item-list mt8">
+        <div class="empty-state"><p>Noch keine Aufgaben</p></div>
+      </div>
+      <button class="btn-text-muted mt8" id="btn-clear-done" data-i18n="todo.clearDone">Erledigte löschen</button>
+    </section>
+
+    <!-- ══ PROGRESS ═══════════════════════════════════════════════ -->
+    <section class="tab" id="tab-progress">
+      <p class="page-title" data-i18n="stats.title">Dein Fortschritt</p>
+      <p class="page-sub" data-i18n="stats.sub">Jede Stunde zählt.</p>
+
+      <!-- Big counter -->
+      <div class="big-counter-card mt20">
+        <p class="big-counter-label" data-i18n="stats.totalLabel">Fokus-Minuten gesamt</p>
+        <div class="big-counter-value" id="big-total-hours">0</div>
+        <p class="big-counter-sub" data-i18n="stats.subLabel">Minuten sinnvoll genutzt</p>
+        <div class="milestone-bar">
+          <div class="milestone-fill" id="milestone-fill" style="width:0%"></div>
+        </div>
+        <p class="milestone-label" id="milestone-label">Nächstes Ziel: 10h</p>
+      </div>
+
+      <!-- Stats grid -->
+      <div class="stats-grid mt20">
+        <div class="stat-card">
+          <div class="stat-val" id="stat-total-sessions">0</div>
+          <div class="stat-lbl" data-i18n="stats.totalSessions">Sessions gesamt</div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-val" id="stat-month-min">0</div>
+          <div class="stat-lbl" data-i18n="stats.monthMin">Minuten diesen Monat</div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-val" id="stat-today">0</div>
+          <div class="stat-lbl" data-i18n="stats.todaySessions">Sessions heute</div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-val" id="stat-streak">0 🔥</div>
+          <div class="stat-lbl" data-i18n="stats.streakLabel">Tage Streak</div>
+        </div>
+      </div>
+
+      <!-- Milestones -->
+      <p class="field-label mt24" data-i18n="stats.milestones">Meilensteine</p>
+      <div id="milestones-list" class="milestones-list"></div>
+
+      <button class="btn-text-muted mt20" id="btn-reset-stats" data-i18n="stats.reset">Statistiken zurücksetzen</button>
+    </section>
+
+    <!-- ══ BLOCKLIST ══════════════════════════════════════════════ -->
+    <section class="tab" id="tab-blocklist">
+      <p class="page-title" data-i18n="block.title">Blockliste</p>
+      <p class="page-sub" data-i18n="block.sub">Diese Seiten werden während einer Session gesperrt.</p>
+
+      <div class="row gap8 mt16">
+        <input type="text" id="domain-input" class="input-field flex1" placeholder="instagram.com" autocomplete="off" spellcheck="false">
+        <button class="btn-icon-add" id="btn-add-domain">+</button>
+      </div>
+
+      <div class="quick-chips mt8">
+        <span class="dim" data-i18n="block.quick">Schnell:</span>
+        <button class="quick-chip" data-d="instagram.com">Instagram</button>
+        <button class="quick-chip" data-d="youtube.com">YouTube</button>
+        <button class="quick-chip" data-d="x.com">X</button>
+        <button class="quick-chip" data-d="reddit.com">Reddit</button>
+        <button class="quick-chip" data-d="tiktok.com">TikTok</button>
+        <button class="quick-chip" data-d="netflix.com">Netflix</button>
+        <button class="quick-chip" data-d="twitch.tv">Twitch</button>
+      </div>
+
+      <div id="blocklist-items" class="item-list mt16">
+        <div class="empty-state"><p>Noch keine Seiten hinzugefügt</p></div>
+      </div>
+    </section>
+
+    <!-- ══ SHIELD ═════════════════════════════════════════════════ -->
+    <section class="tab" id="tab-shield">
+      <p class="page-title" data-i18n="shield.title">Shield</p>
+      <p class="page-sub" data-i18n="shield.sub">Dauerhafter Adult-Content Schutz — unabhängig vom Timer.</p>
+
+      <div class="shield-card mt16" id="shield-card">
+        <div class="shield-top">
+          <div>
+            <p class="shield-name" data-i18n="shield.name">Adult-Content Sperre</p>
+            <p class="shield-desc" data-i18n="shield.desc">120+ Domains systemweit gesperrt.</p>
+          </div>
+          <label class="toggle">
+            <input type="checkbox" id="always-on-toggle">
+            <span class="toggle-slider"></span>
+          </label>
+        </div>
+        <div class="shield-status-row">
+          <span class="status-dot" id="shield-dot"></span>
+          <span id="shield-status-text">Inaktiv</span>
+        </div>
+      </div>
+
+      <div class="info-section mt20">
+        <div class="info-row">
+          <span class="field-label">Wie stark?</span>
+          <p class="dim">Hosts-Datei Blocking — wirkt systemweit, kein VPN nötig.</p>
+        </div>
+        <div class="info-row">
+          <span class="field-label">Was wird gesperrt?</span>
+          <p class="dim">Pornhub, OnlyFans, Chaturbate und 120+ weitere Domains.</p>
+        </div>
+      </div>
+    </section>
+
+    <!-- ══ PRO ════════════════════════════════════════════════════ -->
+    <section class="tab" id="tab-pro">
+      <div class="pro-hero">
+        <div class="pro-logo">✦</div>
+        <p class="pro-title">GlowArise Pro</p>
+        <p class="pro-sub" data-i18n="pro.sub">Werde zur besten Version deiner selbst.</p>
+      </div>
+
+      <div class="pricing-cards">
+        <div class="pricing-card">
+          <div class="pricing-label" data-i18n="pro.monthly">Monatlich</div>
+          <div class="pricing-price">€1,50<span>/Monat</span></div>
+          <ul class="pricing-features">
+            <li>✓ Alle Pro-Features</li>
+            <li>✓ Erweiterte Statistiken</li>
+            <li>✓ Unbegrenzte Blockliste</li>
+            <li>✓ Shield Modus</li>
+            <li>✓ Prioritäts-Support</li>
+          </ul>
+          <button class="btn-pro-buy" id="btn-buy-monthly">Jetzt starten</button>
+        </div>
+        <div class="pricing-card pricing-card-featured">
+          <div class="pricing-badge" data-i18n="pro.popular">Beliebteste Wahl</div>
+          <div class="pricing-label" data-i18n="pro.yearly">Jährlich</div>
+          <div class="pricing-price">€12<span>/Jahr</span></div>
+          <div class="pricing-yearly">Einmalig — spare 6€ vs. monatlich</div>
+          <ul class="pricing-features">
+            <li>✓ Alle Pro-Features</li>
+            <li>✓ Erweiterte Statistiken</li>
+            <li>✓ Unbegrenzte Blockliste</li>
+            <li>✓ Shield Modus</li>
+            <li>✓ Prioritäts-Support</li>
+            <li>✓ Früher Zugang zu neuen Features</li>
+          </ul>
+          <button class="btn-pro-buy btn-pro-featured" id="btn-buy-yearly">✦ Jetzt upgraden</button>
+        </div>
+      </div>
+
+      <div class="free-vs-pro mt24">
+        <p class="field-label">Free vs Pro</p>
+        <div class="compare-table">
+          <div class="compare-row compare-header">
+            <span>Feature</span><span>Free</span><span>Pro ✦</span>
+          </div>
+          <div class="compare-row">
+            <span>Deep Work Timer</span><span>✓</span><span>✓</span>
+          </div>
+          <div class="compare-row">
+            <span>Blockliste</span><span>5 Seiten</span><span class="gold-text">Unbegrenzt</span>
+          </div>
+          <div class="compare-row">
+            <span>To-Do + Freigang</span><span>✓</span><span>✓</span>
+          </div>
+          <div class="compare-row">
+            <span>Statistiken</span><span>Basic</span><span class="gold-text">Erweitert</span>
+          </div>
+          <div class="compare-row">
+            <span>Shield (Adult Block)</span><span>✗</span><span class="gold-text">✓</span>
+          </div>
+          <div class="compare-row">
+            <span>Streak-System</span><span>✗</span><span class="gold-text">✓</span>
+          </div>
+          <div class="compare-row">
+            <span>Sound & Notifications</span><span>✗</span><span class="gold-text">✓</span>
+          </div>
+        </div>
+      </div>
+
+      <p class="paywall-note" data-i18n="pro.note">Zahlungsabwicklung kommt bald. Alle Features sind aktuell kostenlos verfügbar.</p>
+    </section>
+
+    <!-- ══ SETTINGS ═══════════════════════════════════════════════ -->
+    <section class="tab" id="tab-settings">
+      <p class="page-title" data-i18n="settings.title">Einstellungen</p>
+
+      <div class="settings-list mt16">
+        <div class="setting-row">
+          <div>
+            <p class="setting-name" data-i18n="settings.sound">Sound bei Session-Ende</p>
+            <p class="setting-desc" data-i18n="settings.soundDesc">Ton wenn die Session abläuft.</p>
+          </div>
+          <label class="toggle"><input type="checkbox" id="sound-toggle" checked><span class="toggle-slider"></span></label>
+        </div>
+        <div class="setting-row">
+          <div>
+            <p class="setting-name" data-i18n="settings.theme">Erscheinungsbild</p>
+          </div>
+          <select id="theme-select" class="select-field">
+            <option value="dark">Dunkel</option>
+            <option value="light">Hell</option>
+          </select>
+        </div>
+        <div class="setting-row">
+          <div>
+            <p class="setting-name" data-i18n="settings.lang">Sprache</p>
+          </div>
+          <select id="lang-select" class="select-field">
+            <option value="de">Deutsch</option>
+            <option value="en">English</option>
+          </select>
+        </div>
+        <div class="setting-row">
+          <div>
+            <p class="setting-name" data-i18n="settings.quit">App beenden</p>
+            <p class="setting-desc" data-i18n="settings.quitDesc">Fenster schließen lässt die App im Tray weiterlaufen.</p>
+          </div>
+          <button class="btn-ghost-danger-sm" id="btn-quit">Beenden</button>
+        </div>
+      </div>
+    </section>
+
+  </main>
+</div>
+
+<!-- PRO MODAL (Paywall) -->
+<div id="pro-modal" class="modal-overlay hidden">
+  <div class="modal">
+    <button class="modal-close" id="modal-close">×</button>
+    <div class="modal-logo">✦</div>
+    <h2 class="modal-title">GlowArise Pro</h2>
+    <p class="modal-sub" data-i18n="pro.modalSub">Dieses Feature ist exklusiv für Pro-Nutzer.</p>
+    <div class="modal-price">€12 / Jahr</div>
+    <button class="btn-pro-featured" id="modal-buy">✦ Pro freischalten</button>
+    <p class="modal-note" data-i18n="pro.modalNote">Zahlungsabwicklung kommt bald — alle Features sind aktuell kostenlos.</p>
+  </div>
+</div>
+
+<script src="renderer.js"></script>
+</body>
+</html>
