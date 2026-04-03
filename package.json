@@ -5,20 +5,28 @@
   "main": "main.js",
   "scripts": {
     "start": "electron .",
-    "build-mac": "electron-builder --mac"
+    "build-mac": "electron-builder --mac",
+    "build-win": "electron-builder --win --x64"
   },
-  "build": {
-    "appId": "de.aliamin.glowariise",
-    "productName": "GlowArise",
+"build": {
+  "appId": "de.aliamin.glowariise",
+  "productName": "GlowArise",
+  "icon": "icon.png",
+  "extraResources": [
+    {
+      "from": "tray-22.png",
+      "to": "tray-22.png"
+    },
+    {
+      "from": "logo.png",
+      "to": "logo.png"
+    }
+  ],
+  "mac": {
+    "target": "dmg",
+    "category": "public.app-category.productivity",
+    "icon": "icon.png",
     "extraResources": [
-      {
-        "from": "tray-22.png",
-        "to": "tray-22.png"
-      },
-      {
-        "from": "logo.png",
-        "to": "logo.png"
-      },
       {
         "from": "daemon/glowariise-daemon.sh",
         "to": "daemon/glowariise-daemon.sh"
@@ -31,14 +39,13 @@
         "from": "daemon/install.sh",
         "to": "daemon/install.sh"
       }
-    ],
-    "mac": {
-      "target": "dmg",
-      "category": "public.app-category.productivity",
-      "icon": "icon.png"
-    },
-    "icon": "icon.png"
+    ]
   },
+  "win": {
+    "target": "nsis",
+    "icon": "icon.png"
+  }
+},
   "author": "Ali Amin",
   "license": "MIT",
   "devDependencies": {
