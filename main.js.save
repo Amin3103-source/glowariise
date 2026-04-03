@@ -3,12 +3,10 @@ const path = require("path");
 const fs = require("fs");
 const zlib = require("zlib");
 const { execSync, exec } = require("child_process");
-
+const sudoPrompt = require('sudo-prompt');
 
 const DATA_PATH = path.join(app.getPath("userData"), "data.json");
-const HOSTS = process.platform === "win32" 
-  ? "C:\\Windows\\System32\\drivers\\etc\\hosts" 
-  : "/etc/hosts";
+const HOSTS = "/etc/hosts";
 const TAG_S = "# GlowArise START";
 const TAG_E = "# GlowArise END";
 
@@ -33,6 +31,7 @@ const ADULT = [
 function expand(d) {
   const c = d.replace(/^www\./, "").replace(/^m\./, "");
   const extras = EXTRAS[c] || [];
+  // Return base domain + wildcard for ALL subdomains
   return [...new Set([
     c,
     `www.${c}`,
@@ -42,6 +41,7 @@ function expand(d) {
   ])];
 }
 
+// Build wildcard hosts entries — blocks ALL subdomains
 function buildHostsLines(domains) {
   const lines = [];
   for (const d of domains) {
@@ -77,60 +77,10 @@ function strip() {
   return raw.replace(new RegExp(`\n?${TAG_S}[\\s\\S]*?${TAG_E}\n?`,"g"), "\n");
 }
 
-// Schreibt hosts-Datei mit macOS Passwort-Dialog (osascript)
-function writeHostsWithAdmin(content) {
-  return new Promise((resolve) => {
-    try {
-      const tmp = path.join(app.getPath("temp"), "glowariise_hosts");
-      fs.writeFileSync(tmp, content, "utf-8");
-      const script = `do shell script "cp '${tmp}' /etc/hosts && dscacheutil -flushcache && killall -HUP mDNSResponder" with administrator privileges`;
-      exec(`osascript -e '${script}'`, (err) => {
-        if (err) {
-          console.error("admin error:", err.message);
-          resolve(false);
-        } else {
-          resolve(true);
-        }
-      });
-    } catch(e) {
-      console.error("writeHostsWithAdmin error:", e.message);
-      resolve(false);
-    }
-  });
-}
-
-// Prüft ob wir direkt schreiben können (wenn mit sudo gestartet)
-function canWriteDirect() {
-  try { fs.accessSync(HOSTS, fs.constants.W_OK); return true; } catch(_) { return false; }
-}
-
-async function writeHosts(content) {
-  if (process.platform === "win32") {
-    // Windows: direkt schreiben (App muss als Admin gestartet sein)
-    try {
-      fs.writeFileSync(HOSTS, content, "utf-8");
-      flushDNS();
-      return true;
-    } catch(e) {
-      console.error("Windows write error:", e.message);
-      return false;
-    }
-  }
-  if (canWriteDirect()) {
-    // Mac: direkt schreiben (wenn mit sudo gestartet)
-    fs.writeFileSync(HOSTS, content, "utf-8");
-    flushDNS();
-    return true;
-  } else {
-    // Mac: Passwort-Dialog anzeigen
-    return await writeHostsWithAdmin(content);
-  }
-}
-
-async function applyBlocking(closeTabs = false) {
+function applyBlocking(closeTabs = false) {
   const data = loadData();
   let domains = new Set();
-  let rootDomains = new Set();
+  let rootDomains = new Set(); // for Safari tab closing
 
   if (data.alwaysOn) ADULT.forEach(d => {
     const c = d.replace(/^www\./, "");
@@ -150,20 +100,24 @@ async function applyBlocking(closeTabs = false) {
   let hosts = strip();
 
   if (domains.size === 0) {
-    await writeHosts(hosts);
+    fs.writeFileSync(HOSTS, hosts, "utf-8");
+    flushDNS();
     return;
   }
 
   const lines = buildHostsLines([...domains]);
   hosts += `\n${TAG_S}\n${lines.join("\n")}\n${TAG_E}\n`;
-  await writeHosts(hosts);
+  fs.writeFileSync(HOSTS, hosts, "utf-8");
+  flushDNS();
 
+  // Close Safari tabs for blocked domains
   if (closeTabs && rootDomains.size > 0) {
     closeSafariTabs([...rootDomains]);
   }
 }
 
 function closeSafariTabs(rootDomains) {
+  // Build AppleScript condition
   const checks = rootDomains
     .map(d => `(theURL contains "${d}")`)
     .join(" or ");
@@ -195,87 +149,81 @@ end tell`.trim();
   });
 }
 
-async function clearBlocking() {
-  try { await writeHosts(strip()); } catch(_) {}
+function clearBlocking() {
+  try { fs.writeFileSync(HOSTS, strip(), "utf-8"); flushDNS(); } catch(_) {}
 }
 
 function flushDNS() {
-  if (process.platform === "win32") {
-    try { execSync("ipconfig /flushdns", { timeout:5000 }); } catch(_) {}
-    return;
-  }
-  if (process.platform === "win32") {
-    try { execSync("ipconfig /flushdns", { timeout:5000 }); } catch(_) {}
-    return;
-  }
   try { execSync("dscacheutil -flushcache; killall -HUP mDNSResponder", { timeout:5000 }); } catch(_) {}
 }
 
 // ─── Session ──────────────────────────────────────────────────────────────────
-async function startSession(minutes, blocklist) {
+function startSession(minutes, blocklist) {
   const data = loadData();
   const endTime = Date.now() + minutes * 60 * 1000;
   data.session = { active:true, endTime, minutes, blocklist, startedAt:Date.now() };
   data.blocklist = blocklist;
   saveData(data);
-  try { await applyBlocking(true); } catch(e) { return { ok:false, error:e.message }; }
+  try { applyBlocking(true); } catch(e) { return { ok:false, error:e.message }; }
   updateTray();
   if (sessionTimer) clearTimeout(sessionTimer);
   sessionTimer = setTimeout(() => { endSession(); win?.webContents.send("session-ended"); }, minutes*60*1000);
   return { ok:true, endTime };
 }
 
-async function endSession() {
+function endSession() {
   const data = loadData();
   data.session = null;
   saveData(data);
-  try { await applyBlocking(); } catch(_) {}
+  try { applyBlocking(); } catch(_) {}
   updateTray();
   if (sessionTimer) { clearTimeout(sessionTimer); sessionTimer = null; }
 }
 
-async function startFreigang(minutes) {
+function startFreigang(minutes) {
   const data = loadData();
   const endTime = Date.now() + minutes * 60 * 1000;
   data.freigang = { active:true, endTime, minutes };
   saveData(data);
-  try { await applyBlocking(); } catch(_) {}
+  try { applyBlocking(); } catch(_) {}
   updateTray();
   if (freigangTimer) clearTimeout(freigangTimer);
   freigangTimer = setTimeout(() => { endFreigang(); win?.webContents.send("freigang-ended"); }, minutes*60*1000);
   return { ok:true, endTime };
 }
 
-async function endFreigang() {
+function endFreigang() {
   const data = loadData();
   data.freigang = null;
   saveData(data);
-  try { await applyBlocking(); } catch(_) {}
+  try { applyBlocking(); } catch(_) {}
   updateTray();
   if (freigangTimer) { clearTimeout(freigangTimer); freigangTimer = null; }
 }
 
-async function setAlwaysOn(on) {
+function setAlwaysOn(on) {
   const data = loadData(); data.alwaysOn = on; saveData(data);
-  try { await applyBlocking(); } catch(_) {}
+  try { applyBlocking(); } catch(_) {}
   updateTray(); return { ok:true };
 }
 
 function checkWritable() {
-  return canWriteDirect();
+  try { fs.accessSync(HOSTS, fs.constants.W_OK); return true; } catch(_) { return false; }
 }
 
-async function quit() { await clearBlocking(); app.exit(0); }
+function quit() { clearBlocking(); app.exit(0); }
 
 // ─── Tray ─────────────────────────────────────────────────────────────────────
 function makePNG(size,[r,g,b]){function crc32(buf){const t=new Uint32Array(256);for(let i=0;i<256;i++){let c=i;for(let j=0;j<8;j++)c=(c&1)?0xedb88320^(c>>>1):c>>>1;t[i]=c;}let crc=0xffffffff;for(const byte of buf)crc=t[(crc^byte)&0xff]^(crc>>>8);return(crc^0xffffffff)>>>0;}function chunk(name,data){const nb=Buffer.from(name,"ascii"),cb=Buffer.alloc(4),lb=Buffer.alloc(4);const combined=Buffer.concat([nb,data]);cb.writeUInt32BE(crc32(combined),0);lb.writeUInt32BE(data.length,0);return Buffer.concat([lb,nb,data,cb]);}const ihdr=Buffer.alloc(13);ihdr.writeUInt32BE(size,0);ihdr.writeUInt32BE(size,4);ihdr[8]=8;ihdr[9]=2;let raw=Buffer.alloc(0);for(let y=0;y<size;y++){let row=Buffer.alloc(1+size*3);for(let x=0;x<size;x++){row[1+x*3]=r;row[2+x*3]=g;row[3+x*3]=b;}raw=Buffer.concat([raw,row]);}return Buffer.concat([Buffer.from([137,80,78,71,13,10,26,10]),chunk("IHDR",ihdr),chunk("IDAT",zlib.deflateSync(raw)),chunk("IEND",Buffer.alloc(0))]);}
 
 function getTrayIcon(state) {
   const base = app.isPackaged ? process.resourcesPath : __dirname;
+  // Use the same logo for all states, just change tooltip
   const iconPath = path.join(base, "tray-22.png");
   if (fs.existsSync(iconPath)) {
     return nativeImage.createFromPath(iconPath).resize({ width: 22, height: 22 });
   }
+  // Fallback to colored square
   const color = state === "session" ? [201,168,76] : state === "freigang" ? [249,115,22] : [80,80,80];
   return nativeImage.createFromBuffer(Buffer.from(makePNG(16, color)));
 }
@@ -330,6 +278,7 @@ app.whenReady().then(() => {
     ]},
   ]));
 
+  // Use real logo as tray icon
   const trayIconPath = app.isPackaged
     ? path.join(process.resourcesPath, "tray-22.png")
     : path.join(__dirname, "tray-22.png");

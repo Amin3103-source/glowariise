@@ -1,55 +1,58 @@
 {
   "name": "glowariise",
   "version": "1.0.0",
-  "description": "GlowArise \u2014 Deep Work & Focus App",
+  "description": "GlowArise — Deep Work & Focus App",
   "main": "main.js",
   "scripts": {
     "start": "electron .",
     "build-mac": "electron-builder --mac",
     "build-win": "electron-builder --win --x64"
   },
-"build": {
-  "appId": "de.aliamin.glowariise",
-  "productName": "GlowArise",
-  "icon": "icon.png",
-  "extraResources": [
-    {
-      "from": "tray-22.png",
-      "to": "tray-22.png"
-    },
-    {
-      "from": "logo.png",
-      "to": "logo.png"
-    }
-  ],
-  "mac": {
-    "target": "dmg",
-    "category": "public.app-category.productivity",
+  "build": {
+    "appId": "de.aliamin.glowariise",
+    "productName": "GlowArise",
     "icon": "icon.png",
     "extraResources": [
       {
-        "from": "daemon/glowariise-daemon.sh",
-        "to": "daemon/glowariise-daemon.sh"
+        "from": "tray-22.png",
+        "to": "tray-22.png"
       },
       {
-        "from": "daemon/de.aliamin.glowariise.plist",
-        "to": "daemon/de.aliamin.glowariise.plist"
-      },
-      {
-        "from": "daemon/install.sh",
-        "to": "daemon/install.sh"
+        "from": "logo.png",
+        "to": "logo.png"
       }
-    ]
+    ],
+    "mac": {
+      "target": "dmg",
+      "category": "public.app-category.productivity",
+      "icon": "icon.png",
+      "extraResources": [
+        {
+          "from": "daemon/glowariise-daemon.sh",
+          "to": "daemon/glowariise-daemon.sh"
+        },
+        {
+          "from": "daemon/de.aliamin.glowariise.plist",
+          "to": "daemon/de.aliamin.glowariise.plist"
+        },
+        {
+          "from": "daemon/install.sh",
+          "to": "daemon/install.sh"
+        }
+      ]
+    },
+    "win": {
+      "target": "nsis",
+      "icon": "icon.png"
+    }
   },
-  "win": {
-    "target": "nsis",
-    "icon": "icon.png"
-  }
-},
   "author": "Ali Amin",
   "license": "MIT",
   "devDependencies": {
-    "electron": "^28.0.0",
-    "electron-builder": "^24.0.0"
+    "electron": "^41.1.1",
+    "electron-builder": "^26.8.1"
+  },
+  "dependencies": {
+    "sudo-prompt": "^9.2.1"
   }
 }
