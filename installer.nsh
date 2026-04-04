@@ -1,8 +1,6 @@
 !macro customUnInstall
-  nsExec::ExecToLog 'powershell -Command "Get-Content \"$env:SystemRoot\System32\drivers\etc\hosts\" | Where-Object { $_ -notmatch \"GlowArise\" } | Set-Content \"$env:SystemRoot\System32\drivers\etc\hosts\"; ipconfig /flushdns"'
-  DetailPrint "GlowArise Einträge entfernt."
+  nsExec::ExecToLog 'cmd /c "powershell -NoProfile -ExecutionPolicy Bypass -Command \"(Get-Content C:\Windows\System32\drivers\etc\hosts) | Where-Object {$_ -notmatch 'GlowArise'} | Set-Content C:\Windows\System32\drivers\etc\hosts\""'
 !macroend
 
 !macro customInstall
-  DetailPrint "GlowArise wird installiert..."
 !macroend
