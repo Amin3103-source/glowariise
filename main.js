@@ -202,13 +202,29 @@ async function clearBlocking() {
 function flushDNS() {
   if (process.platform === "win32") {
     try { execSync("ipconfig /flushdns", { timeout:5000 }); } catch(_) {}
-    return;
-  }
-  if (process.platform === "win32") {
-    try { execSync("ipconfig /flushdns", { timeout:5000 }); } catch(_) {}
+    disableChromeDOH();
     return;
   }
   try { execSync("dscacheutil -flushcache; killall -HUP mDNSResponder", { timeout:5000 }); } catch(_) {}
+}
+
+// Deaktiviert Chrome DNS-over-HTTPS damit hosts-Datei funktioniert
+function disableChromeDOH() {
+  if (process.platform !== "win32") return;
+  try {
+    // Chrome DoH via Registry deaktivieren
+    execSync('reg add "HKEY_LOCAL_MACHINE\SOFTWARE\Policies\Google\Chrome" /v DnsOverHttpsMode /t REG_SZ /d off /f', { timeout:5000 });
+    // Chrome DNS Cache leeren
+    execSync('powershell -Command "Stop-Process -Name chrome -Force -ErrorAction SilentlyContinue; Start-Sleep 1"', { timeout:8000 });
+  } catch(_) {}
+}
+
+// Stellt Chrome DoH wieder her nach Session
+function restoreChromeDOH() {
+  if (process.platform !== "win32") return;
+  try {
+    execSync('reg delete "HKEY_LOCAL_MACHINE\SOFTWARE\Policies\Google\Chrome" /v DnsOverHttpsMode /f', { timeout:5000 });
+  } catch(_) {}
 }
 
 // ─── Session ──────────────────────────────────────────────────────────────────
@@ -230,6 +246,7 @@ async function endSession() {
   data.session = null;
   saveData(data);
   try { await applyBlocking(); } catch(_) {}
+  restoreChromeDOH();
   updateTray();
   if (sessionTimer) { clearTimeout(sessionTimer); sessionTimer = null; }
 }
